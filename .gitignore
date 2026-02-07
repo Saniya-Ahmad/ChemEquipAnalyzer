@@ -1,0 +1,77 @@
+# =========================
+# Python / Django
+# =========================
+__pycache__/
+*.py[cod]
+*.sqlite3
+db.sqlite3
+*.log
+.migrations/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Django stuff
+*.pot
+*.pyc
+media/
+staticfiles/
+
+# Local settings
+local_settings.py
+.env
+.env.local
+
+# =========================
+# Node / React
+# =========================
+node_modules/
+build/
+dist/
+coverage/
+.pnpm-debug.log
+
+# React environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# CSV / Uploaded files
+# =========================
+*.csv
+uploads/
+demo_video/
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# =========================
+# Misc
+# =========================
+report.pdf
+*.pem
+*.key
+*.crt
+
+*.swo
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Report / Generated Files
+# =========================
+*.pdf
