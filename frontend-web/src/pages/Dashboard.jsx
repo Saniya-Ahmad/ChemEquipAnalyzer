@@ -17,7 +17,7 @@ export default function Dashboard({ auth }) {
 
   const loadData = async () => {
     try {
-      const res = await getLatestSummary(auth);
+      const res = await getLatestSummary();
       setSummary(res.data);
     } catch (err) {
       console.error("Failed to load summary", err);
@@ -41,7 +41,7 @@ export default function Dashboard({ auth }) {
         <section style={styles.uploadSection}>
           <div style={styles.uploadCard}>
             <h2 style={styles.uploadTitle}>Upload Equipment Data</h2>
-            <UploadForm onUpload={loadData} />
+<UploadForm onUpload={loadData} auth={auth} />
           </div>
         </section>
 

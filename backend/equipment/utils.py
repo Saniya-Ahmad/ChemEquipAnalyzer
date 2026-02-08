@@ -3,7 +3,7 @@ import pandas as pd
 def analyze_csv(file):
     df = pd.read_csv(file)
 
-    # 🔹 Normalize column names
+    # Normalize column names
     df.columns = df.columns.str.strip().str.lower()
 
     required_columns = ["type", "flowrate", "pressure", "temperature"]

@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { uploadCSV } from "../api/api";
 
-export default function UploadForm({ onUpload }) {
+export default function UploadForm({ onUpload, auth }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!file) {
       setError("Please select a CSV file");
       return;
@@ -15,12 +16,16 @@ export default function UploadForm({ onUpload }) {
 
     setLoading(true);
     setError("");
+
     try {
-      const result = await uploadCSV(file);
+      await uploadCSV(file);
       setFile(null);
       onUpload();
     } catch (err) {
-      setError(err.response?.data?.error || "Upload failed. Ensure CSV has columns: Type, Flowrate, Pressure, Temperature");
+      setError(
+        err.response?.data?.error ||
+        "Upload failed. Ensure CSV has columns: Type, Flowrate, Pressure, Temperature"
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -36,11 +41,15 @@ export default function UploadForm({ onUpload }) {
           onChange={(e) => setFile(e.target.files[0])}
           style={styles.fileInput}
         />
-        <span style={styles.fileButtonText}>{file ? file.name : "Choose CSV file"}</span>
+        <span style={styles.fileButtonText}>
+          {file ? file.name : "Choose CSV file"}
+        </span>
       </label>
+
       <button type="submit" disabled={loading} style={styles.button}>
         {loading ? "Uploading..." : "Upload CSV"}
       </button>
+
       {error && <p style={styles.error}>{error}</p>}
     </form>
   );
@@ -88,4 +97,3 @@ const styles = {
     margin: 0,
   },
 };
-

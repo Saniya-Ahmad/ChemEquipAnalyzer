@@ -1,15 +1,19 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser, FormParser  # 🔹 ADD THIS
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.http import FileResponse
+
 from .models import Dataset
 from .serializers import DatasetSerializer
 from .utils import analyze_csv
+
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
-from django.http import FileResponse
 class UploadCSV(APIView):
+    # 🔐 Optional: protect upload
     # permission_classes = [IsAuthenticated]
+
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request):
@@ -21,48 +25,45 @@ class UploadCSV(APIView):
         try:
             summary = analyze_csv(file)
 
-            dataset_fields = [
-                "total_count",
-                "avg_flowrate",
-                "avg_pressure",
-                "avg_temperature",
-                "type_distribution"
-            ]
+            Dataset.objects.create(
+                total_count=summary["total_count"],
+                avg_flowrate=summary["avg_flowrate"],
+                avg_pressure=summary["avg_pressure"],
+                avg_temperature=summary["avg_temperature"],
+                type_distribution=summary["type_distribution"],
+            )
 
-            filtered_summary = {k: summary[k] for k in dataset_fields if k in summary}
-
-            Dataset.objects.create(**filtered_summary)
-
+            # keep last 5 datasets only
             datasets = Dataset.objects.order_by("-uploaded_at")
-
             if datasets.count() > 5:
-             datasets.last().delete()
+                datasets.last().delete()
 
             return Response(summary)
 
-        except ValueError as e:
-            return Response({"error": str(e)}, status=400)
         except Exception as e:
-            return Response({"error": f"Failed to process CSV: {str(e)}"}, status=400)
+            return Response({"error": str(e)}, status=400)
 class LatestSummary(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         latest = Dataset.objects.last()
+        if not latest:
+            return Response({"message": "No data available"})
         return Response(DatasetSerializer(latest).data)
-
 class History(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         data = Dataset.objects.order_by("-uploaded_at")
         return Response(DatasetSerializer(data, many=True).data)
-
 class PDFReport(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         dataset = Dataset.objects.last()
+        if not dataset:
+            return Response({"error": "No data available"}, status=400)
+
         file_path = "report.pdf"
 
         doc = SimpleDocTemplate(file_path)
