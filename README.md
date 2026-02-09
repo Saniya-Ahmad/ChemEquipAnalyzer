@@ -80,7 +80,7 @@ Prerequisites: Node.js, npm or yarn
 ```
 cd frontend-web
 ```
-###Install Dependencies
+### Install Dependencies
 ```
 npm install
 ```
@@ -112,6 +112,9 @@ pip install pyqt5 requests
 ```
 python main.py
 ```
+
+<img width="1916" height="1010" alt="image" src="https://github.com/user-attachments/assets/7861dd20-f574-4787-ac46-6ecd3955f87a" />
+
 ## CSV File Format
 
 Uploaded CSV must contain the following columns:
@@ -142,3 +145,4 @@ Password
 - /api/upload/	POST	Upload CSV
 - /api/summary/latest/	GET	Get latest summary
 - /api/history/	GET	Get upload history
+
